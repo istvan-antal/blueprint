@@ -55,6 +55,7 @@ class Instance(object):
             "sudo sh -c \"printf '\\nslowlog = /var/log/php5-fpm-\\$pool.log.slow\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
             "sudo sh -c \"printf '\\nrequest_slowlog_timeout = 30s\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
             "sudo sh -c \"printf '\\ncatch_workers_output = yes\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
+            "sudo sed -i -e 's/pm.max_children = [0-9]*/pm.max_children = 100/g' /etc/php5/fpm/pool.d/www.conf",
             "sudo service php5-fpm restart",
             "sudo chmod 0644 /var/log/php5-fpm*"
         )
