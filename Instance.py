@@ -2,6 +2,7 @@ import os
 import subprocess
 
 from SymfonyProject import SymfonyProject
+from LocalMysql import LocalMysql
 
 BLUEPRINTS_DIRECTORY = '~/.blueprint'
 
@@ -33,7 +34,7 @@ class Instance(object):
     def provision(self):
         RSA_KEY = os.path.expanduser(BLUEPRINTS_DIRECTORY + '/id_rsa')
         self.upload_file(RSA_KEY, '~/.ssh/id_rsa')
-        self.upload_file('blueprints/20auto-upgrades', '~/20auto-upgrades')
+        self.upload_file('blueprint/20auto-upgrades', '~/20auto-upgrades')
         self.run_commands(
             'sudo apt-get update',
             'sudo apt-get install unattended-upgrades',
@@ -73,6 +74,14 @@ class Instance(object):
     
     def install_redis(self):
         self.run_command('sudo apt-get install --assume-yes redis-server')
+        
+    def create_mysql(self, password):
+        self.run_commands(
+            "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password " + password + "'",
+            "sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password " + password + "'",
+            "sudo apt-get -y install mysql-server"
+        )
+        return LocalMysql(instance=self, password=password)
         
     def use_redis_php_sessions(self, host='localhost', port=6379):
         self.run_commands(
@@ -120,6 +129,7 @@ class Instance(object):
         scriptname = os.path.basename(script)
         self.upload_file(script, destination = '~/' + scriptname)
         self.run_command('~/' + scriptname)
+        self.run_command('rm ~/' + scriptname)
     
     def upload_file(self, file, destination = None):
         if destination is None:
