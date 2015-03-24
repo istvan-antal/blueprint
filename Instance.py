@@ -44,15 +44,15 @@ class Instance(object):
             'ssh-keyscan github.com >> ~/.ssh/known_hosts'
         )
     
-    def setup_generic_php(self):
+    def setup_generic_php(self, post_max_size='50M', upload_max_filesize='50M', max_file_uploads='50'):
         self.run_commands(
             'sudo apt-get update',
             'sudo apt-get install --assume-yes git-core nginx php5-fpm php5-cli php5-curl php5-mysql php5-redis',
             'curl -sS https://getcomposer.org/installer | php',
             'sudo mv composer.phar /usr/local/bin/composer',
-            "sudo sed -i -e 's/post_max_size = [0-9]*M/post_max_size = 50M/g' /etc/php5/fpm/php.ini",
-            "sudo sed -i -e 's/upload_max_filesize = [0-9]*M/upload_max_filesize = 50M/g' /etc/php5/fpm/php.ini",
-            "sudo sed -i -e 's/max_file_uploads = [0-9]*/max_file_uploads = 50/g' /etc/php5/fpm/php.ini",
+            "sudo sed -i -e 's/post_max_size = [0-9]*M/post_max_size = " + post_max_size + "/g' /etc/php5/fpm/php.ini",
+            "sudo sed -i -e 's/upload_max_filesize = [0-9]*M/upload_max_filesize = " + upload_max_filesize + "/g' /etc/php5/fpm/php.ini",
+            "sudo sed -i -e 's/max_file_uploads = [0-9]*/max_file_uploads = " + max_file_uploads + "/g' /etc/php5/fpm/php.ini",
             "sudo sh -c \"printf '\\nslowlog = /var/log/php5-fpm-\\$pool.log.slow\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
             "sudo sh -c \"printf '\\nrequest_slowlog_timeout = 30s\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
             "sudo sh -c \"printf '\\ncatch_workers_output = yes\\n' >> /etc/php5/fpm/pool.d/www.conf\"",
