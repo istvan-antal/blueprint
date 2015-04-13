@@ -110,7 +110,16 @@ class Instance(object):
             'sudo npm install gulp -g',
             'sudo rm -fr /home/ubuntu/tmp',
             'sudo rm -fr /home/ubuntu/.npm'
-        )   
+        )
+        
+    def install_my_key(self):
+        self.upload_file(os.path.expanduser('~/.ssh/id_rsa.pub'), '~/id_rsa.pub')
+        self.run_commands(
+            'cat ~/id_rsa.pub >> ~/.ssh/authorized_keys',
+            'rm ~/id_rsa.pub'
+        )
+        print "Instance ready, use the following command to SSH in:"
+        print ' '.join(['ssh', 'ubuntu@' + self.instance_dns])
     
     def clone_symfony_project(self, repo):
         self.clone_project(repo)
