@@ -31,3 +31,5 @@ Generate an SSH key pair, add the public key to your git hosting and put the pri
 Nginx-PHP example https://github.com/istvan-antal/blueprint-example-nginx-php
 
 Wordpress example https://github.com/istvan-antal/blueprint-example-wordpress
+
+Weather application example https://github.com/istvan-antal/weather-watch
